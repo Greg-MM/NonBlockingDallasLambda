@@ -1,11 +1,11 @@
 #######################################
-# Syntax Coloring Map For NonBlockingDallas
+# Syntax Coloring Map For NonBlockingDallasLambda
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-NonBlockingDallas	KEYWORD1
+NonBlockingDallasLambda	KEYWORD1
 resolution	KEYWORD1
 
 #######################################

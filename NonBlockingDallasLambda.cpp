@@ -20,9 +20,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "NonBlockingDallas.h"
+#include "NonBlockingDallasLambda.h"
 
-NonBlockingDallas::NonBlockingDallas(DallasTemperature *dallasTemp)
+NonBlockingDallasLambda::NonBlockingDallasLambda(DallasTemperature *dallasTemp)
 {
 	_dallasTemp = dallasTemp;
 	_sensorsCount = 0;
@@ -36,7 +36,7 @@ NonBlockingDallas::NonBlockingDallas(DallasTemperature *dallasTemp)
 		_temperatures[i] = DEVICE_DISCONNECTED_RAW;
 }
 
-void NonBlockingDallas::begin(resolution res, unsigned long tempInterval)
+void NonBlockingDallasLambda::begin(resolution res, unsigned long tempInterval)
 {
 	_tempInterval = tempInterval;
 	_currentState = notFound;
@@ -86,14 +86,14 @@ void NonBlockingDallas::begin(resolution res, unsigned long tempInterval)
 //									PRIVATE
 //==============================================================================================
 
-void NonBlockingDallas::waitNextReading()
+void NonBlockingDallasLambda::waitNextReading()
 {
 	if (_lastReadingMillis != 0 && (millis() - _lastReadingMillis < _tempInterval - _conversionMillis))
 		return;
 	requestTemperature();
 }
 
-void NonBlockingDallas::waitConversion()
+void NonBlockingDallasLambda::waitConversion()
 {
 	if (_dallasTemp->isConversionComplete())
 	{
@@ -103,7 +103,7 @@ void NonBlockingDallas::waitConversion()
 	}
 }
 
-void NonBlockingDallas::readSensors()
+void NonBlockingDallasLambda::readSensors()
 {
 	for (int i = 0; i < _sensorsCount; i++)
 	{
@@ -114,7 +114,7 @@ void NonBlockingDallas::readSensors()
 	_currentState = waitingNextReading;
 }
 
-void NonBlockingDallas::readTemperatures(int deviceIndex)
+void NonBlockingDallasLambda::readTemperatures(int deviceIndex)
 {
 	int32_t rawTemp = _dallasTemp->getTemp(_sensorAddresses[deviceIndex]);
 
@@ -154,7 +154,7 @@ void NonBlockingDallas::readTemperatures(int deviceIndex)
 //									PUBLIC
 //==============================================================================================
 
-void NonBlockingDallas::update()
+void NonBlockingDallasLambda::update()
 {
 	switch (_currentState)
 	{
@@ -173,7 +173,7 @@ void NonBlockingDallas::update()
 	}
 }
 
-void NonBlockingDallas::requestTemperature()
+void NonBlockingDallasLambda::requestTemperature()
 {
 	_sensorsCount = _dallasTemp->getDeviceCount();
 	if (_sensorsCount < 1)
@@ -197,7 +197,7 @@ void NonBlockingDallas::requestTemperature()
 }
 
 /**
- * @brief Functions below are extensions to the origninal NonBlockingDallas
+ * @brief Functions below are extensions to the origninal NonBlockingDallasLambda
  
  * @author oOpen <git@logisciel.com>
  *
@@ -215,7 +215,7 @@ void NonBlockingDallas::requestTemperature()
  *
  * @return uint8_t Number of sensors found
  */
-uint8_t NonBlockingDallas::getSensorsCount()
+uint8_t NonBlockingDallasLambda::getSensorsCount()
 {
 	return this->_sensorsCount;
 }
@@ -226,7 +226,7 @@ uint8_t NonBlockingDallas::getSensorsCount()
  * @return true if index exist
  * @return false if not exist
  */
-bool NonBlockingDallas::indexExist(uint8_t deviceIndex)
+bool NonBlockingDallasLambda::indexExist(uint8_t deviceIndex)
 {
 	if (this->_sensorsCount > 0 && deviceIndex >= 0 && deviceIndex < this->_sensorsCount)
 		return true;
@@ -239,7 +239,7 @@ bool NonBlockingDallas::indexExist(uint8_t deviceIndex)
  * @return true if index exist
  * @return false else index not exist
  */
-bool NonBlockingDallas::getDeviceAddress(uint8_t deviceIndex, DeviceAddress deviceAddress)
+bool NonBlockingDallasLambda::getDeviceAddress(uint8_t deviceIndex, DeviceAddress deviceAddress)
 {
 	if (deviceIndex >= 0 && deviceIndex < this->_sensorsCount)
 	{
@@ -255,7 +255,7 @@ bool NonBlockingDallas::getDeviceAddress(uint8_t deviceIndex, DeviceAddress devi
  *
  * @return String representation of the address
  */
-String NonBlockingDallas::getAddressString(uint8_t deviceIndex)
+String NonBlockingDallasLambda::getAddressString(uint8_t deviceIndex)
 {
 	DeviceAddress tmpAddress;
 	this->getDeviceAddress(deviceIndex, tmpAddress);
@@ -268,7 +268,7 @@ String NonBlockingDallas::getAddressString(uint8_t deviceIndex)
  * @return int32_t temperature IF index exist
  * @return DEVICE_DISCONNECTED_RAW if index not exist
  */
-int32_t NonBlockingDallas::getTemperatureRAW(uint8_t deviceIndex)
+int32_t NonBlockingDallasLambda::getTemperatureRAW(uint8_t deviceIndex)
 {
 	if (this->indexExist(deviceIndex))
 		return this->_temperatures[deviceIndex];
@@ -282,7 +282,7 @@ int32_t NonBlockingDallas::getTemperatureRAW(uint8_t deviceIndex)
  * @return float temperature IF index exist
  * @return DEVICE_DISCONNECTED_C if index not exist
  */
-float NonBlockingDallas::getTemperatureC(uint8_t deviceIndex)
+float NonBlockingDallasLambda::getTemperatureC(uint8_t deviceIndex)
 {
 	if (this->indexExist(deviceIndex))
 		return this->rawToCelsius(this->_temperatures[deviceIndex]);
@@ -296,7 +296,7 @@ float NonBlockingDallas::getTemperatureC(uint8_t deviceIndex)
  * @return float temperature IF index exist
  * @return DEVICE_DISCONNECTED_F if index not exist
  */
-float NonBlockingDallas::getTemperatureF(uint8_t deviceIndex)
+float NonBlockingDallasLambda::getTemperatureF(uint8_t deviceIndex)
 {
 	if (this->indexExist(deviceIndex))
 		return this->rawToFahrenheit(this->_temperatures[deviceIndex]);
@@ -315,7 +315,7 @@ float NonBlockingDallas::getTemperatureF(uint8_t deviceIndex)
  * @return -1 address not found
  * @return -2 bus have no sensor
  */
-int8_t NonBlockingDallas::getIndex(DeviceAddress deviceAddress)
+int8_t NonBlockingDallasLambda::getIndex(DeviceAddress deviceAddress)
 {
 	if (this->_sensorsCount > 0)
 	{
@@ -336,7 +336,7 @@ int8_t NonBlockingDallas::getIndex(DeviceAddress deviceAddress)
  * @return int32_t temperature IF DeviceAddress exist
  * @return DEVICE_DISCONNECTED_RAW if DeviceAddress not exist
  */
-int32_t NonBlockingDallas::getTemperatureRAW(DeviceAddress deviceAddress)
+int32_t NonBlockingDallasLambda::getTemperatureRAW(DeviceAddress deviceAddress)
 {
 	uint8_t tempIndex = this->getIndex(deviceAddress);
 	if (tempIndex >= 0)
@@ -351,7 +351,7 @@ int32_t NonBlockingDallas::getTemperatureRAW(DeviceAddress deviceAddress)
  * @return float temperature IF DeviceAddress exist
  * @return DEVICE_DISCONNECTED_C if DeviceAddress not exist
  */
-float NonBlockingDallas::getTemperatureC(DeviceAddress deviceAddress)
+float NonBlockingDallasLambda::getTemperatureC(DeviceAddress deviceAddress)
 {
 	uint8_t tempIndex = this->getIndex(deviceAddress);
 	if (tempIndex >= 0)
@@ -366,7 +366,7 @@ float NonBlockingDallas::getTemperatureC(DeviceAddress deviceAddress)
  * @return float temperature IF DeviceAddress exist
  * @return DEVICE_DISCONNECTED_F if DeviceAddress not exist
  */
-float NonBlockingDallas::getTemperatureF(DeviceAddress deviceAddress)
+float NonBlockingDallasLambda::getTemperatureF(DeviceAddress deviceAddress)
 {
 	uint8_t tempIndex = this->getIndex(deviceAddress);
 	if (tempIndex >= 0)
@@ -386,7 +386,7 @@ float NonBlockingDallas::getTemperatureF(DeviceAddress deviceAddress)
  * @return -1 address not found
  * @return -2 bus have no sensor
  */
-int8_t NonBlockingDallas::getIndex(String addressString)
+int8_t NonBlockingDallasLambda::getIndex(String addressString)
 {
 	DeviceAddress tmpAddress;
 	this->convertDeviceAddressStringToDeviceAddress(addressString, tmpAddress);
@@ -399,7 +399,7 @@ int8_t NonBlockingDallas::getIndex(String addressString)
  * @return int32_t temperature IF address String representation exist
  * @return DEVICE_DISCONNECTED_RAW if address String representation not exist
  */
-int32_t NonBlockingDallas::getTemperatureRAW(String addressString)
+int32_t NonBlockingDallasLambda::getTemperatureRAW(String addressString)
 {
 	uint8_t tempIndex = this->getIndex(addressString);
 	if (tempIndex >= 0)
@@ -414,7 +414,7 @@ int32_t NonBlockingDallas::getTemperatureRAW(String addressString)
  * @return float temperature IF address String representation exist
  * @return DEVICE_DISCONNECTED_C if address String representation not exist
  */
-float NonBlockingDallas::getTemperatureC(String addressString)
+float NonBlockingDallasLambda::getTemperatureC(String addressString)
 {
 	uint8_t tempIndex = this->getIndex(addressString);
 	if (tempIndex >= 0)
@@ -429,7 +429,7 @@ float NonBlockingDallas::getTemperatureC(String addressString)
  * @return float temperature IF address String representation exist
  * @return DEVICE_DISCONNECTED_F if address String representation not exist
  */
-float NonBlockingDallas::getTemperatureF(String addressString)
+float NonBlockingDallasLambda::getTemperatureF(String addressString)
 {
 	uint8_t tempIndex = this->getIndex(addressString);
 	if (tempIndex >= 0)
@@ -448,7 +448,7 @@ float NonBlockingDallas::getTemperatureF(String addressString)
  * @return true if addresses are the same
  * @return false if not the same
  */
-bool NonBlockingDallas::compareTowDeviceAddresses(DeviceAddress deviceAddress1, DeviceAddress deviceAddress2)
+bool NonBlockingDallasLambda::compareTowDeviceAddresses(DeviceAddress deviceAddress1, DeviceAddress deviceAddress2)
 {
 	for (size_t i = 0; i < 8; i++)
 		if (deviceAddress1[i] != deviceAddress2[i])
@@ -461,7 +461,7 @@ bool NonBlockingDallas::compareTowDeviceAddresses(DeviceAddress deviceAddress1, 
  *
  * @return String representation of the address
  */
-String NonBlockingDallas::convertDeviceAddressToString(DeviceAddress deviceAddress)
+String NonBlockingDallasLambda::convertDeviceAddressToString(DeviceAddress deviceAddress)
 {
 	String addressString = "";
 	for (size_t i = 0; i < 8; i++)
@@ -479,7 +479,7 @@ String NonBlockingDallas::convertDeviceAddressToString(DeviceAddress deviceAddre
  * @return true if string lenght is good
  * @return false if string lenght is wrong
  */
-bool NonBlockingDallas::convertDeviceAddressStringToDeviceAddress(String addressString, DeviceAddress deviceAddress)
+bool NonBlockingDallasLambda::convertDeviceAddressStringToDeviceAddress(String addressString, DeviceAddress deviceAddress)
 {
 	if (addressString.length() == 16)
 	{
@@ -503,7 +503,7 @@ bool NonBlockingDallas::convertDeviceAddressStringToDeviceAddress(String address
  *
  * @return float temperature in °C
  */
-float NonBlockingDallas::rawToCelsius(int32_t rawTemperature)
+float NonBlockingDallasLambda::rawToCelsius(int32_t rawTemperature)
 {
 	return (float)rawTemperature * 0.0078125f;
 }

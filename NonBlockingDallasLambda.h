@@ -20,8 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#ifndef NonBlockingDallas_h
-#define NonBlockingDallas_h
+#ifndef NonBlockingDallasLambda_h
+#define NonBlockingDallasLambda_h
 
 #include <Arduino.h>
 #include <DallasTemperature.h>
@@ -29,7 +29,7 @@
 #define ONE_WIRE_MAX_DEV 15 // Maximum number of devices on the One wire bus
 // #define DEBUG_DS18B20
 
-class NonBlockingDallas
+class NonBlockingDallasLambda
 {
 
 public:
@@ -41,7 +41,7 @@ public:
 		resolution_12 = 12
 	};
 
-	NonBlockingDallas(DallasTemperature *dallasTemp);
+	NonBlockingDallasLambda(DallasTemperature *dallasTemp);
 	void begin(resolution res, unsigned long tempInterval);
 	void update();
 	void requestTemperature();
